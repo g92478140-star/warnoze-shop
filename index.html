@@ -47,56 +47,8 @@
     <!-- Products Grid Section -->
     <section class="products-container" id="products-section">
         <h2 class="section-title">Trending Collection</h2>
-        
-        <div class="products-grid" id="product-list">
-            <!-- Product 1 -->
-            <div class="card" data-name="Smart Watch">
-                <span class="badge best-seller">Best Seller</span>
-                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" alt="Smart Watch">
-                <div class="card-details">
-                    <h3>Smart Watch</h3>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.8)</span></div>
-                    <p class="price">Rs. 4,500 <span class="old-price">Rs. 6,000</span></p>
-                    <button onclick="addToCart('Smart Watch', 4500, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                </div>
-            </div>
-
-            <!-- Product 2 -->
-            <div class="card" data-name="Wireless Headphones">
-                <span class="badge new">New</span>
-                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="Headphones">
-                <div class="card-details">
-                    <h3>Wireless Headphones</h3>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i> <span>(4.0)</span></div>
-                    <p class="price">Rs. 3,200 <span class="old-price">Rs. 4,500</span></p>
-                    <button onclick="addToCart('Wireless Headphones', 3200, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                </div>
-            </div>
-
-            <!-- Product 3 -->
-            <div class="card" data-name="Gaming Mouse">
-                <span class="badge sale">Sale</span>
-                <img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500" alt="Gaming Mouse">
-                <div class="card-details">
-                    <h3>Gaming Mouse</h3>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> <span>(5.0)</span></div>
-                    <p class="price">Rs. 1,800 <span class="old-price">Rs. 2,500</span></p>
-                    <button onclick="addToCart('Gaming Mouse', 1800, 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                </div>
-            </div>
-
-            <!-- Product 4 -->
-            <div class="card" data-name="Running Shoes">
-                <span class="badge best-seller">Best Seller</span>
-                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="Running Shoes">
-                <div class="card-details">
-                    <h3>Running Shoes</h3>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.6)</span></div>
-                    <p class="price">Rs. 5,500 <span class="old-price">Rs. 7,000</span></p>
-                    <button onclick="addToCart('Running Shoes', 5500, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                </div>
-            </div>
-        </div>
+        <!-- Is empty div ke andar JavaScript automatic 1,000+ items load karega -->
+        <div class="products-grid" id="product-list"></div>
     </section>
 
     <!-- Sliding Sidebar Cart -->
@@ -106,7 +58,6 @@
             <i class="fas fa-times close-btn" onclick="toggleCart()"></i>
         </div>
         <div class="cart-items-container" id="cart-items">
-            <!-- Items will be injected by JavaScript -->
             <p class="empty-msg">Your cart is empty.</p>
         </div>
         <div class="cart-sidebar-footer">
