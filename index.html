@@ -17,11 +17,36 @@
         .admin-modal h3 { margin-bottom: 15px; color: #333; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px; }
         .admin-form input, .admin-form select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         .admin-form button { width: 100%; padding: 12px; background: #2ed573; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
-        .admin-prod-list { margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #eee; padding: 5px; }
+        .admin-prod-list { margin-top: 15px; max-height: 150px; overflow-y: auto; border: 1px solid #eee; padding: 5px; }
         .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #eee; font-size: 13px; }
         .admin-item button { background: #ff4757; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; }
         .upload-tip { font-size: 12px; color: #555; margin-bottom: 12px; background: #f9f9f9; padding: 8px; border-left: 3px solid #3742fa; border-radius: 3px; }
         .upload-tip a { color: #3742fa; font-weight: bold; text-decoration: none; }
+
+        /* Product Detail Page View (Modal) Styles */
+        .product-detail-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 95%; max-width: 800px; background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.4); z-index: 2500; border-radius: 12px; max-height: 90vh; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .product-detail-modal.open { display: block; }
+        .detail-layout { display: flex; flex-wrap: wrap; gap: 20px; }
+        .detail-img-sec { flex: 1; min-width: 280px; }
+        .detail-img-sec img { width: 100%; border-radius: 8px; object-fit: cover; max-height: 350px; }
+        .detail-info-sec { flex: 1; min-width: 280px; display: flex; flex-direction: column; justify-content: space-between; }
+        .detail-info-sec h2 { margin-top: 0; color: #222; font-size: 22px; }
+        .detail-desc { font-size: 14px; color: #666; margin: 10px 0; line-height: 1.5; }
+        .detail-action-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-buy-now { flex: 1; background: #ff9f43; color: white; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; }
+        .btn-add-cart-detail { flex: 1; background: #2ed573; color: white; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        
+        /* Comments/Reviews Section */
+        .comments-section { margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; }
+        .comments-list { max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
+        .comment-item { background: #f8f9fa; padding: 8px 12px; border-radius: 6px; margin-bottom: 8px; font-size: 13px; }
+        .comment-item strong { color: #333; }
+        .comment-form { display: flex; gap: 8px; }
+        .comment-form input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .comment-form button { background: #3742fa; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+        
+        /* Clickable Cards */
+        .card img, .card h3 { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -67,14 +92,24 @@
         <div class="products-grid" id="product-list"></div>
     </section>
 
-    <!-- Admin Panel Modal Overlay -->
-    <div class="modal-overlay" id="admin-overlay" onclick="closeAdminPanel()"></div>
+    <!-- General Overlay for Modals -->
+    <div class="modal-overlay" id="admin-overlay" onclick="closeAllModals()"></div>
+
+    <!-- Product Details Page / View Modal -->
+    <div class="product-detail-modal" id="product-detail-modal">
+        <div style="text-align: right; margin-bottom: 10px;">
+            <i class="fas fa-times" style="cursor:pointer; font-size: 20px; color: #666;" onclick="closeAllModals()"></i>
+        </div>
+        <div class="detail-layout" id="detail-layout-content">
+            <!-- Dynamic data will load here -->
+        </div>
+    </div>
 
     <!-- Admin Panel Modal Box -->
     <div class="admin-modal" id="admin-modal">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h3><i class="fas fa-lock"></i> Store Admin Panel</h3>
-            <i class="fas fa-times" style="cursor:pointer;" onclick="closeAdminPanel()"></i>
+            <i class="fas fa-times" style="cursor:pointer;" onclick="closeAllModals()"></i>
         </div>
         
         <div class="admin-form">
@@ -82,8 +117,8 @@
             <input type="number" id="new-prod-price" placeholder="Selling Price (Rs.)">
             <input type="number" id="new-prod-oldprice" placeholder="Old Price / Cut Price (Rs.)">
             <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., 50% OFF, Daraz Choice)">
+            <input type="text" id="new-prod-desc" placeholder="Product Description / Details">
             
-            <!-- Photo Upload Assistance Option -->
             <div class="upload-tip">
                 <i class="fas fa-image"></i> <strong>Photo Upload Tool:</strong> Laptop ya Mobile se photo lagane ke liye 
                 <a href="https://imgbb.com" target="_blank">imgbb.com</a> par upload karein aur Direct Link yahan paste karein.
@@ -112,12 +147,12 @@
                 <span id="cart-total">Rs. 0</span>
             </div>
             
-            <!-- Enhanced Checkout Form for Customers -->
+            <!-- Enhanced Checkout Form -->
             <div class="checkout-form">
                 <h4><i class="fab fa-whatsapp"></i> Quick WhatsApp Order</h4>
                 <input type="text" id="user-name" placeholder="Your Full Name" required>
-                <input type="tel" id="user-phone" placeholder="WhatsApp / Phone Number (e.g., 03001234567)" required>
-                <input type="text" id="user-address" placeholder="Delivery Address (City Name & Area)" required>
+                <input type="tel" id="user-phone" placeholder="WhatsApp / Phone Number" required>
+                <input type="text" id="user-address" placeholder="Delivery Address (City & Area)" required>
                 <button class="whatsapp-btn" onclick="sendOrderViaWhatsApp()"><i class="fab fa-whatsapp"></i> Send Order via WhatsApp</button>
             </div>
         </div>
@@ -135,17 +170,18 @@
 
     <!-- Instant Execution Script -->
     <script>
-        // Default Best Selling Daraz Style Products
+        // Default Products Data with Descriptions
         const defaultProducts = [
-            { name: "M10 TWS Wireless Earbuds Bluetooth 5.1", price: 699, oldPrice: 1500, badge: "Daraz Choice", rating: "4.7", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
-            { name: "T500 Smart Watch Full Touch Screen", price: 1199, oldPrice: 2500, badge: "Top Seller", rating: "4.5", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500" },
-            { name: "10 Inch LED Ring Light with Tripod Stand", price: 980, oldPrice: 1999, badge: "Vlogger Pack", rating: "4.6", img: "https://images.unsplash.com/photo-1626266150247-f26cb3b9cf78?w=500" },
-            { name: "Vintage T9 Hair Trimmer & Clipper for Men", price: 850, oldPrice: 1800, badge: "Hot Item", rating: "4.8", img: "https://images.unsplash.com/photo-1621607512214-68297480165e?w=500" },
-            { name: "Fleeces Zipper Hoodie for Winter Wear", price: 1250, oldPrice: 2200, badge: "50% OFF", rating: "4.4", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500" },
-            { name: "Anti-Theft Laptop Backpack with USB Port", price: 1499, oldPrice: 3000, badge: "Free Shipping", rating: "4.6", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" }
+            { id: 1, name: "M10 TWS Wireless Earbuds Bluetooth 5.1", price: 699, oldPrice: 1500, badge: "Daraz Choice", rating: "4.7", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500", desc: "Premium sound quality with heavy bass. 2000mAh heavy power bank charging case. Waterproof design, backup time up to 4-5 hours easily." },
+            { id: 2, name: "T500 Smart Watch Full Touch Screen", price: 1199, oldPrice: 2500, badge: "Top Seller", rating: "4.5", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500", desc: "Full fitness tracking features. Heart rate sensor, sleep monitor, and WhatsApp alerts notification screen. High-quality strap included." },
+            { id: 3, name: "10 Inch LED Ring Light with Tripod Stand", price: 980, oldPrice: 1999, badge: "Vlogger Pack", rating: "4.6", img: "https://images.unsplash.com/photo-1626266150247-f26cb3b9cf78?w=500", desc: "Perfect for TikTok, YouTube, and Live streaming. 3 different light colors (Warm, White, Mixed) with adjustable brightness controllers." },
+            { id: 4, name: "Vintage T9 Hair Trimmer & Clipper for Men", price: 850, oldPrice: 1800, badge: "Hot Item", rating: "4.8", img: "https://images.unsplash.com/photo-1621607512214-68297480165e?w=500", desc: "Professional dragon style metal body trimmer. Rechargeable battery, sharp blades for ultra close clean shaves and lining adjustments." },
+            { id: 5, name: "Fleeces Zipper Hoodie for Winter Wear", price: 1250, oldPrice: 2200, badge: "50% OFF", rating: "4.4", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500", desc: "Warm export quality soft fleeces fabric hoodie. Best stitching, long lasting zipper puller, ideal for casual streetwear during cold weather." },
+            { id: 6, name: "Anti-Theft Laptop Backpack with USB Port", price: 1499, oldPrice: 3000, badge: "Free Shipping", rating: "4.6", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", desc: "Waterproof safe hidden zippers material. Built-in USB charging extension port, large internal compartments for 15.6 inch laptops safely." }
         ];
 
         let baseProducts = JSON.parse(localStorage.getItem("custom_products")) || defaultProducts;
+        let productComments = JSON.parse(localStorage.getItem("product_comments")) || {};
         let productsData = [];
 
         function generateCatalog() {
@@ -163,9 +199,9 @@
                 grid.innerHTML += `
                     <div class="card" data-name="${product.name}">
                         <span class="badge ${product.badge.toLowerCase().replace(' ', '-')}">${product.badge}</span>
-                        <img src="${product.img}" alt="${product.name}">
+                        <img src="${product.img}" alt="${product.name}" onclick="openProductDetailPage(${product.id})">
                         <div class="card-details">
-                            <h3>${product.name}</h3>
+                            <h3 onclick="openProductDetailPage(${product.id})">${product.name}</h3>
                             <div class="rating"><i class="fas fa-star"></i> <span>(${product.rating})</span></div>
                             <p class="price">Rs. ${Math.round(product.price).toLocaleString()} <span class="old-price">Rs. ${Math.round(product.oldPrice).toLocaleString()}</span></p>
                             <button onclick="addToCart('${product.name}', ${product.price}, '${product.img}')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
@@ -175,7 +211,86 @@
             });
         }
 
-        // --- ADMIN PANEL ---
+        // --- PRODUCT DETAIL PAGE LOGIC ---
+        function openProductDetailPage(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+
+            const modal = document.getElementById("product-detail-modal");
+            const overlay = document.getElementById("admin-overlay");
+            const content = document.getElementById("detail-layout-content");
+
+            // Get comments for this product
+            let commentsHtml = '';
+            const comments = productComments[productId] || ["Bohat acha product hai! Highly recommended.", "Delivery timing fast thi, quality standard hai."];
+            comments.forEach(c => {
+                commentsHtml += `<div class="comment-item">💬 <strong>Customer:</strong> ${c}</div>`;
+            });
+
+            content.innerHTML = `
+                <div class="detail-img-sec">
+                    <img src="${product.img}" alt="${product.name}">
+                    <p style="font-size:12px; color:#888; margin-top:10px; text-align:center;"><i class="fas fa-images"></i> Tap image to view full scale resolution.</p>
+                </div>
+                <div class="detail-info-sec">
+                    <div>
+                        <h2>${product.name}</h2>
+                        <div class="rating" style="margin-bottom:10px;"><i class="fas fa-star" style="color:#ffae42;"></i> <span>${product.rating} Rating</span> | <span style="color:#2ed573;">In Stock</span></div>
+                        <p class="price" style="font-size:24px;">Rs. ${Math.round(product.price).toLocaleString()} <span class="old-price" style="font-size:16px;">Rs. ${Math.round(product.oldPrice).toLocaleString()}</span></p>
+                        <p class="detail-desc">${product.desc || 'No description available for this trending item.'}</p>
+                    </div>
+                    <div class="detail-action-btns">
+                        <button class="btn-add-cart-detail" onclick="addToCart('${product.name}', ${product.price}, '${product.img}')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                        <button class="btn-buy-now" onclick="buyNowDirect('${product.name}', ${product.price}, '${product.img}')"><i class="fas fa-bolt"></i> Buy Now</button>
+                    </div>
+                    
+                    <div class="comments-section">
+                        <h4><i class="fas fa-comments"></i> Customer Reviews & Comments</h4>
+                        <div class="comments-list" id="comments-box-${product.id}">${commentsHtml}</div>
+                        <div class="comment-form">
+                            <input type="text" id="new-comment-input" placeholder="Write your review or query...">
+                            <button onclick="addProductComment(${product.id})">Post</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add("open");
+            overlay.classList.add("open");
+        }
+
+        function addProductComment(productId) {
+            const input = document.getElementById("new-comment-input");
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (!productComments[productId]) {
+                productComments[productId] = ["Bohat acha product hai! Highly recommended.", "Delivery timing fast thi, quality standard hai."];
+            }
+            productComments[productId].push(val);
+            localStorage.setItem("product_comments", JSON.stringify(productComments));
+
+            const box = document.getElementById(`comments-box-${productId}`);
+            box.innerHTML += `<div class="comment-item">💬 <strong>Customer:</strong> ${val}</div>`;
+            input.value = "";
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function buyNowDirect(name, price, image) {
+            // Clear previous cart, add just this item and open checkout immediately
+            cart = [{ name, price, image, qty: 1 }];
+            saveAndRefreshCart();
+            closeAllModals();
+            toggleCart();
+        }
+
+        function closeAllModals() {
+            document.getElementById("admin-modal").classList.remove("open");
+            document.getElementById("product-detail-modal").classList.remove("open");
+            document.getElementById("admin-overlay").classList.remove("open");
+        }
+
+        // --- ADMIN PANEL CONTROL ---
         const ADMIN_PASSWORD = "admin786";
 
         function openAdminPanel() {
@@ -189,16 +304,12 @@
             }
         }
 
-        function closeAdminPanel() {
-            document.getElementById("admin-modal").classList.remove("open");
-            document.getElementById("admin-overlay").classList.remove("open");
-        }
-
         function addNewProductFromAdmin() {
             const name = document.getElementById("new-prod-name").value.trim();
             const price = parseInt(document.getElementById("new-prod-price").value);
             const oldPrice = parseInt(document.getElementById("new-prod-oldprice").value) || price + 600;
             const badge = document.getElementById("new-prod-badge").value.trim() || "Daraz Hot";
+            const desc = document.getElementById("new-prod-desc").value.trim() || "High quality trending online store product.";
             const img = document.getElementById("new-prod-img").value.trim();
 
             if (!name || !price || !img) {
@@ -206,15 +317,17 @@
                 return;
             }
 
+            const uniqueId = Date.now();
             const randomRating = (4.3 + Math.random() * 0.6).toFixed(1);
 
-            baseProducts.unshift({ name, price, oldPrice, badge, rating: randomRating, img });
+            baseProducts.unshift({ id: uniqueId, name, price, oldPrice, badge, rating: randomRating, img, desc });
             localStorage.setItem("custom_products", JSON.stringify(baseProducts));
             
             document.getElementById("new-prod-name").value = "";
             document.getElementById("new-prod-price").value = "";
             document.getElementById("new-prod-oldprice").value = "";
             document.getElementById("new-prod-badge").value = "";
+            document.getElementById("new-prod-desc").value = "";
             document.getElementById("new-prod-img").value = "";
 
             alert("Product Added Successfully!");
