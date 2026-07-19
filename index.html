@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warnoze Shop</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+header{
+background:#111;
+color:white;
+padding:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:30px;
+font-weight:bold;
+color:#ff3b3b;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+font-size:18px;
+}
+
+.hero{
+height:500px;
+background:linear-gradient(to right,#ff3b3b,#ff7b00);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+text-align:center;
+}
+
+.hero h1{
+font-size:55px;
+margin-bottom:20px;
+}
+
+.hero p{
+font-size:22px;
+margin-bottom:25px;
+}
+
+.hero button{
+padding:15px 35px;
+font-size:20px;
+border:none;
+background:white;
+color:red;
+border-radius:10px;
+cursor:pointer;
+}
+
+.search{
+width:80%;
+margin:40px auto;
+}
+
+.search input{
+width:100%;
+padding:15px;
+font-size:18px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+padding:40px;
+}
+
+.card{
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 0 10px rgba(0,0,0,.2);
+}
+
+.card img{
+width:100%;
+height:250px;
+object-fit:cover;
+}
+
+.card h3{
+padding:10px;
+}
+
+.card p{
+padding:0 10px 10px;
+color:red;
+font-size:22px;
+}
+
+.card button{
+width:100%;
+padding:15px;
+border:none;
+background:red;
+color:white;
+font-size:18px;
+cursor:pointer;
+}
+
+footer{
+background:#111;
+color:white;
+text-align:center;
+padding:30px;
+margin-top:50px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🛒 Warnoze Shop
+</div>
+
+<nav>
+<a href="#">Home</a>
+<a href="#">Products</a>
+<a href="#">Cart 🛒</a>
+<a href="#">Contact</a>
+</nav>
+
+</header>
+
+<section class="hero">
+
+<h1>Welcome To Warnoze Shop</h1>
+
+<p>Buy Everything At Cheap Prices</p>
+
+<button>Shop Now</button>
+
+</section>
+
+<div class="search">
+
+<input type="text" placeholder="Search Product...">
+
+</div>
+
+<section class="products">
+
+<div class="card">
+
+<img src="https://picsum.photos/300/250?1">
+
+<h3>Gaming Mouse</h3>
+
+<p>Rs.2500</p>
+
+<button>Add To Cart</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300/250?2">
+
+<h3>Gaming Keyboard</h3>
+
+<p>Rs.4500</p>
+
+<button>Add To Cart</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300/250?3">
+
+<h3>Headphones</h3>
+
+<p>Rs.3200</p>
+
+<button>Add To Cart</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300/250?4">
+
+<h3>Smart Watch</h3>
+
+<p>Rs.6500</p>
+
+<button>Add To Cart</button>
+
+</div>
+
+</section>
+
+<footer>
+
+<h2>Warnoze Shop</h2>
+
+<p>WhatsApp: 03366290599</p>
+
+<p>JazzCash: 03002869538</p>
+
+<p>© 2026 Warnoze Shop</p>
+
+</footer>
+
+</body>
+</html>
