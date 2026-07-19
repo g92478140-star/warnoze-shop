@@ -16,10 +16,17 @@
         .modal-overlay.open { display: block; }
         .admin-modal h3 { margin-bottom: 15px; color: #333; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px; }
         .admin-form input, .admin-form select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .admin-form button { width: 100%; padding: 12px; background: #2ed573; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
-        .admin-prod-list { margin-top: 15px; max-height: 150px; overflow-y: auto; border: 1px solid #eee; padding: 5px; }
-        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #eee; font-size: 13px; }
-        .admin-item button { background: #ff4757; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; }
+        
+        /* Dynamic Button Styles for Add/Update */
+        .admin-form button { width: 100%; padding: 12px; background: #2ed573; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; transition: background 0.2s; }
+        .admin-form button.update-mode { background: #ff9f43 !important; }
+        
+        .admin-prod-list { margin-top: 15px; max-height: 180px; overflow-y: auto; border: 1px solid #eee; padding: 5px; border-radius: 5px; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 5px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .admin-item-actions { display: flex; gap: 5px; }
+        .admin-item btn-del { background: #ff4757; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
+        .admin-item btn-edit { background: #ff9f43; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
+        
         .upload-tip { font-size: 12px; color: #555; margin-bottom: 12px; background: #f9f9f9; padding: 8px; border-left: 3px solid #3742fa; border-radius: 3px; }
         .upload-tip a { color: #3742fa; font-weight: bold; text-decoration: none; }
 
@@ -37,7 +44,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             text-transform: uppercase;
             z-index: 10;
-            display: inline-block !important; /* Visible properly */
+            display: inline-block !important;
         }
 
         /* Product Detail Page View (Modal) Styles */
@@ -100,7 +107,7 @@
             <h2><i class="fas fa-bolt"></i> Today's Special Discount</h2>
             <p>Hurry up! Limited stock available at these rates.</p>
         </div>
-        <div class="timer" id="countdown-timer">05h : 45m : 20s</div>
+        <div class="timer" id="countdown-timer">05h : 44m : 34s</div>
     </section>
 
     <!-- Products Grid Section -->
@@ -130,10 +137,13 @@
         </div>
         
         <div class="admin-form">
+            <!-- Hidden Input to track which product ID is being edited -->
+            <input type="hidden" id="edit-prod-id" value="">
+            
             <input type="text" id="new-prod-name" placeholder="Product Name (e.g., M10 Earbuds)">
             <input type="number" id="new-prod-price" placeholder="Selling Price (Rs.)">
             <input type="number" id="new-prod-oldprice" placeholder="Old Price / Cut Price (Rs.)">
-            <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., TOP SELLER, 50% OFF, HOT ITEM)">
+            <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., 50% OFF, Daraz Choice)">
             <input type="text" id="new-prod-desc" placeholder="Product Description / Details">
             
             <div class="upload-tip">
@@ -142,7 +152,8 @@
             </div>
             <input type="text" id="new-prod-img" placeholder="Paste Image Link URL Here">
             
-            <button onclick="addNewProductFromAdmin()"><i class="fas fa-plus-circle"></i> Add Product to Shop</button>
+            <!-- Dynamic Action Button -->
+            <button id="admin-submit-btn" onclick="handleAdminSubmit()"><i class="fas fa-plus-circle"></i> Add Product to Shop</button>
         </div>
 
         <h4>Manage Existing Products</h4>
@@ -213,7 +224,6 @@
             grid.innerHTML = "";
             
             productsToRender.forEach(product => {
-                // If badge is completely empty, don't show the black box layout
                 const badgeHtml = product.badge ? `<span class="badge">${product.badge}</span>` : '';
                 
                 grid.innerHTML += `
@@ -305,6 +315,7 @@
             document.getElementById("admin-modal").classList.remove("open");
             document.getElementById("product-detail-modal").classList.remove("open");
             document.getElementById("admin-overlay").classList.remove("open");
+            resetAdminForm();
         }
 
         // --- ADMIN PANEL CONTROL ---
@@ -321,11 +332,21 @@
             }
         }
 
+        // Handles whether to Add or Update based on form state
+        function handleAdminSubmit() {
+            const editId = document.getElementById("edit-prod-id").value;
+            if (editId) {
+                updateExistingProduct(editId);
+            } else {
+                addNewProductFromAdmin();
+            }
+        }
+
         function addNewProductFromAdmin() {
             const name = document.getElementById("new-prod-name").value.trim();
             const price = parseInt(document.getElementById("new-prod-price").value);
             const oldPrice = parseInt(document.getElementById("new-prod-oldprice").value) || price + 600;
-            const badge = document.getElementById("new-prod-badge").value.trim(); // Dynamic Custom Input Save
+            const badge = document.getElementById("new-prod-badge").value.trim();
             const desc = document.getElementById("new-prod-desc").value.trim() || "High quality trending online store product.";
             const img = document.getElementById("new-prod-img").value.trim();
 
@@ -340,6 +361,67 @@
             baseProducts.unshift({ id: uniqueId, name, price, oldPrice, badge, rating: randomRating, img, desc });
             localStorage.setItem("custom_products", JSON.stringify(baseProducts));
             
+            resetAdminForm();
+            alert("Product Added Successfully! 🎉");
+            renderAdminProductsList();
+            refreshShopUI();
+        }
+
+        // NEW: Populate form fields for Editing
+        function editProductFromAdmin(id) {
+            const product = baseProducts.find(p => p.id == id);
+            if (!product) return;
+
+            document.getElementById("edit-prod-id").value = product.id;
+            document.getElementById("new-prod-name").value = product.name;
+            document.getElementById("new-prod-price").value = product.price;
+            document.getElementById("new-prod-oldprice").value = product.oldPrice;
+            document.getElementById("new-prod-badge").value = product.badge || "";
+            document.getElementById("new-prod-desc").value = product.desc || "";
+            document.getElementById("new-prod-img").value = product.img;
+
+            // Change button text and color to update mode
+            const submitBtn = document.getElementById("admin-submit-btn");
+            submitBtn.innerHTML = `<i class="fas fa-edit"></i> Update Product Details`;
+            submitBtn.classList.add("update-mode");
+            
+            // Scroll to form top safely
+            document.getElementById("admin-modal").scrollTop = 0;
+        }
+
+        // NEW: Save Updated Product Details
+        function updateExistingProduct(id) {
+            const name = document.getElementById("new-prod-name").value.trim();
+            const price = parseInt(document.getElementById("new-prod-price").value);
+            const oldPrice = parseInt(document.getElementById("new-prod-oldprice").value);
+            const badge = document.getElementById("new-prod-badge").value.trim();
+            const desc = document.getElementById("new-prod-desc").value.trim();
+            const img = document.getElementById("new-prod-img").value.trim();
+
+            if (!name || !price || !img) {
+                alert("Name, Price, and Image Link cannot be empty!");
+                return;
+            }
+
+            const prodIdx = baseProducts.findIndex(p => p.id == id);
+            if (prodIdx !== -1) {
+                baseProducts[prodIdx].name = name;
+                baseProducts[prodIdx].price = price;
+                baseProducts[prodIdx].oldPrice = oldPrice || price + 600;
+                baseProducts[prodIdx].badge = badge;
+                baseProducts[prodIdx].desc = desc;
+                baseProducts[prodIdx].img = img;
+
+                localStorage.setItem("custom_products", JSON.stringify(baseProducts));
+                resetAdminForm();
+                alert("Product Updated Successfully! 👍");
+                renderAdminProductsList();
+                refreshShopUI();
+            }
+        }
+
+        function resetAdminForm() {
+            document.getElementById("edit-prod-id").value = "";
             document.getElementById("new-prod-name").value = "";
             document.getElementById("new-prod-price").value = "";
             document.getElementById("new-prod-oldprice").value = "";
@@ -347,28 +429,33 @@
             document.getElementById("new-prod-desc").value = "";
             document.getElementById("new-prod-img").value = "";
 
-            alert("Product Added Successfully!");
-            renderAdminProductsList();
-            refreshShopUI();
+            const submitBtn = document.getElementById("admin-submit-btn");
+            submitBtn.innerHTML = `<i class="fas fa-plus-circle"></i> Add Product to Shop`;
+            submitBtn.classList.remove("update-mode");
         }
 
         function deleteProductFromAdmin(index) {
             if(confirm("Delete this product?")) {
                 baseProducts.splice(index, 1);
                 localStorage.setItem("custom_products", JSON.stringify(baseProducts));
+                resetAdminForm();
                 renderAdminProductsList();
                 refreshShopUI();
             }
         }
 
+        // Updated to include Edit Button layout
         function renderAdminProductsList() {
             const container = document.getElementById("admin-manage-list");
             container.innerHTML = "";
             baseProducts.forEach((prod, idx) => {
                 container.innerHTML += `
                     <div class="admin-item">
-                        <span>${prod.name.substring(0,30)}... (Rs. ${prod.price})</span>
-                        <button onclick="deleteProductFromAdmin(${idx})"><i class="fas fa-trash"></i></button>
+                        <span>${prod.name.substring(0,25)}... (Rs. ${prod.price})</span>
+                        <div class="admin-item-actions">
+                            <button class="btn-edit" onclick="editProductFromAdmin(${prod.id})" style="background:#ff9f43; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;" title="Edit Product"><i class="fas fa-edit"></i></button>
+                            <button class="btn-del" onclick="deleteProductFromAdmin(${idx})" style="background:#ff4757; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;" title="Delete Product"><i class="fas fa-trash"></i></button>
+                        </div>
                     </div>
                 `;
             });
@@ -486,7 +573,7 @@
             renderCartItems();
         }, 100);
 
-        let time = 20720;
+        let time = 20674;
         setInterval(() => {
             time--;
             let h = Math.floor(time / 3600);
