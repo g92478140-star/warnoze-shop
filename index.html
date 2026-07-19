@@ -170,14 +170,14 @@
 
     <!-- Instant Execution Script -->
     <script>
-        // Default Products Data with Descriptions
+        // Default Products Data with Unique IDs and Descriptions
         const defaultProducts = [
-            { id: 1, name: "M10 TWS Wireless Earbuds Bluetooth 5.1", price: 699, oldPrice: 1500, badge: "Daraz Choice", rating: "4.7", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500", desc: "Premium sound quality with heavy bass. 2000mAh heavy power bank charging case. Waterproof design, backup time up to 4-5 hours easily." },
-            { id: 2, name: "T500 Smart Watch Full Touch Screen", price: 1199, oldPrice: 2500, badge: "Top Seller", rating: "4.5", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500", desc: "Full fitness tracking features. Heart rate sensor, sleep monitor, and WhatsApp alerts notification screen. High-quality strap included." },
-            { id: 3, name: "10 Inch LED Ring Light with Tripod Stand", price: 980, oldPrice: 1999, badge: "Vlogger Pack", rating: "4.6", img: "https://images.unsplash.com/photo-1626266150247-f26cb3b9cf78?w=500", desc: "Perfect for TikTok, YouTube, and Live streaming. 3 different light colors (Warm, White, Mixed) with adjustable brightness controllers." },
-            { id: 4, name: "Vintage T9 Hair Trimmer & Clipper for Men", price: 850, oldPrice: 1800, badge: "Hot Item", rating: "4.8", img: "https://images.unsplash.com/photo-1621607512214-68297480165e?w=500", desc: "Professional dragon style metal body trimmer. Rechargeable battery, sharp blades for ultra close clean shaves and lining adjustments." },
-            { id: 5, name: "Fleeces Zipper Hoodie for Winter Wear", price: 1250, oldPrice: 2200, badge: "50% OFF", rating: "4.4", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500", desc: "Warm export quality soft fleeces fabric hoodie. Best stitching, long lasting zipper puller, ideal for casual streetwear during cold weather." },
-            { id: 6, name: "Anti-Theft Laptop Backpack with USB Port", price: 1499, oldPrice: 3000, badge: "Free Shipping", rating: "4.6", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", desc: "Waterproof safe hidden zippers material. Built-in USB charging extension port, large internal compartments for 15.6 inch laptops safely." }
+            { id: 101, name: "M10 TWS Wireless Earbuds Bluetooth 5.1", price: 699, oldPrice: 1500, badge: "Daraz Choice", rating: "4.7", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500", desc: "Premium sound quality with heavy bass. 2000mAh heavy power bank charging case. Waterproof design, backup time up to 4-5 hours easily." },
+            { id: 102, name: "T500 Smart Watch Full Touch Screen", price: 1199, oldPrice: 2500, badge: "Top Seller", rating: "4.5", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500", desc: "Full fitness tracking features. Heart rate sensor, sleep monitor, and WhatsApp alerts notification screen. High-quality strap included." },
+            { id: 103, name: "10 Inch LED Ring Light with Tripod Stand", price: 980, oldPrice: 1999, badge: "Vlogger Pack", rating: "4.6", img: "https://images.unsplash.com/photo-1626266150247-f26cb3b9cf78?w=500", desc: "Perfect for TikTok, YouTube, and Live streaming. 3 different light colors (Warm, White, Mixed) with adjustable brightness controllers." },
+            { id: 104, name: "Vintage T9 Hair Trimmer & Clipper for Men", price: 850, oldPrice: 1800, badge: "Hot Item", rating: "4.8", img: "https://images.unsplash.com/photo-1621607512214-68297480165e?w=500", desc: "Professional dragon style metal body trimmer. Rechargeable battery, sharp blades for ultra close clean shaves and lining adjustments." },
+            { id: 105, name: "Fleeces Zipper Hoodie for Winter Wear", price: 1250, oldPrice: 2200, badge: "50% OFF", rating: "4.4", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500", desc: "Warm export quality soft fleeces fabric hoodie. Best stitching, long lasting zipper puller, ideal for casual streetwear during cold weather." },
+            { id: 106, name: "Anti-Theft Laptop Backpack with USB Port", price: 1499, oldPrice: 3000, badge: "Free Shipping", rating: "4.6", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", desc: "Waterproof safe hidden zippers material. Built-in USB charging extension port, large internal compartments for 15.6 inch laptops safely." }
         ];
 
         let baseProducts = JSON.parse(localStorage.getItem("custom_products")) || defaultProducts;
@@ -213,14 +213,13 @@
 
         // --- PRODUCT DETAIL PAGE LOGIC ---
         function openProductDetailPage(productId) {
-            const product = productsData.find(p => p.id === productId);
+            const product = productsData.find(p => p.id == productId);
             if (!product) return;
 
             const modal = document.getElementById("product-detail-modal");
             const overlay = document.getElementById("admin-overlay");
             const content = document.getElementById("detail-layout-content");
 
-            // Get comments for this product
             let commentsHtml = '';
             const comments = productComments[productId] || ["Bohat acha product hai! Highly recommended.", "Delivery timing fast thi, quality standard hai."];
             comments.forEach(c => {
@@ -229,8 +228,7 @@
 
             content.innerHTML = `
                 <div class="detail-img-sec">
-                    <img src="${product.img}" alt="${product.name}">
-                    <p style="font-size:12px; color:#888; margin-top:10px; text-align:center;"><i class="fas fa-images"></i> Tap image to view full scale resolution.</p>
+                    <img src="${product.img}" alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=500'">
                 </div>
                 <div class="detail-info-sec">
                     <div>
@@ -248,7 +246,7 @@
                         <h4><i class="fas fa-comments"></i> Customer Reviews & Comments</h4>
                         <div class="comments-list" id="comments-box-${product.id}">${commentsHtml}</div>
                         <div class="comment-form">
-                            <input type="text" id="new-comment-input" placeholder="Write your review or query...">
+                            <input type="text" id="new-comment-input" placeholder="Write your review...">
                             <button onclick="addProductComment(${product.id})">Post</button>
                         </div>
                     </div>
@@ -277,7 +275,6 @@
         }
 
         function buyNowDirect(name, price, image) {
-            // Clear previous cart, add just this item and open checkout immediately
             cart = [{ name, price, image, qty: 1 }];
             saveAndRefreshCart();
             closeAllModals();
