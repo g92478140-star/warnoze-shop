@@ -3,101 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warnoze-Shop | Premium Online Store</title>
-    <!-- Style.css Linking -->
+    <title>Warnoze-Shop | Multi-Feature Premium Store</title>
     <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome Icons for modern UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
+    <!-- Top Announcement Bar -->
+    <div class="top-bar">
+        <p>⚡ Mega Sale Live! Get 10% Off on JazzCash Payments! ⚡</p>
+    </div>
+
     <!-- Header / Navbar -->
     <header>
-        <h2>Warnoze-Shop</h2>
+        <div class="logo">Warnoze-Shop <span class="dot">.</span></div>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="#">Products</a>
-            <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+            <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+            <a href="#products-section"><i class="fas fa-box"></i> Products</a>
+            <a href="#" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
         </nav>
     </header>
 
     <!-- Hero Section with Search -->
     <section class="hero">
-        <h1>Welcome to Warnoze-Shop</h1>
-        <p>Find the best products at the finest prices!</p>
+        <h1>Discover Premium Products</h1>
+        <p>Your one-stop shop for everything you need.</p>
         <div class="search-container">
-            <input type="text" id="search-bar" placeholder="Search products..." onkeyup="searchProducts()">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-bar" placeholder="What are you looking for today?..." onkeyup="searchProducts()">
         </div>
     </section>
 
-    <!-- Categories Title -->
-    <div class="categories">
-        <h2>Featured Products</h2>
-    </div>
+    <!-- Flash Sale Section -->
+    <section class="flash-sale">
+        <div class="sale-info">
+            <h2><i class="fas fa-bolt"></i> Flash Deal of the Day</h2>
+            <p>Hurry up! Offers expire soon.</p>
+        </div>
+        <div class="timer" id="countdown-timer">05h : 45m : 20s</div>
+    </section>
 
     <!-- Products Grid Section -->
-    <section class="products" id="product-list">
+    <section class="products-container" id="products-section">
+        <h2 class="section-title">Trending Collection</h2>
         
-        <!-- Product 1 -->
-        <div class="card" data-name="Smart Watch">
-            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" alt="Smart Watch">
-            <h2>Smart Watch</h2>
-            <h3>Premium Edition</h3>
-            <p>Rs. 4,500</p>
-            <button onclick="addToCart('Smart Watch', 4500, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500')">Add to Cart</button>
-        </div>
+        <div class="products-grid" id="product-list">
+            <!-- Product 1 -->
+            <div class="card" data-name="Smart Watch">
+                <span class="badge best-seller">Best Seller</span>
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" alt="Smart Watch">
+                <div class="card-details">
+                    <h3>Smart Watch</h3>
+                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.8)</span></div>
+                    <p class="price">Rs. 4,500 <span class="old-price">Rs. 6,000</span></p>
+                    <button onclick="addToCart('Smart Watch', 4500, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                </div>
+            </div>
 
-        <!-- Product 2 -->
-        <div class="card" data-name="Wireless Headphones">
-            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="Headphones">
-            <h2>Wireless Headphones</h2>
-            <h3>Bass Boosted</h3>
-            <p>Rs. 3,200</p>
-            <button onclick="addToCart('Wireless Headphones', 3200, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500')">Add to Cart</button>
-        </div>
+            <!-- Product 2 -->
+            <div class="card" data-name="Wireless Headphones">
+                <span class="badge new">New</span>
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="Headphones">
+                <div class="card-details">
+                    <h3>Wireless Headphones</h3>
+                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i> <span>(4.0)</span></div>
+                    <p class="price">Rs. 3,200 <span class="old-price">Rs. 4,500</span></p>
+                    <button onclick="addToCart('Wireless Headphones', 3200, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                </div>
+            </div>
 
-        <!-- Product 3 -->
-        <div class="card" data-name="Gaming Mouse">
-            <img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500" alt="Gaming Mouse">
-            <h2>Gaming Mouse</h2>
-            <h3>RGB Lighting</h3>
-            <p>Rs. 1,800</p>
-            <button onclick="addToCart('Gaming Mouse', 1800, 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500')">Add to Cart</button>
-        </div>
+            <!-- Product 3 -->
+            <div class="card" data-name="Gaming Mouse">
+                <span class="badge sale">Sale</span>
+                <img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500" alt="Gaming Mouse">
+                <div class="card-details">
+                    <h3>Gaming Mouse</h3>
+                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> <span>(5.0)</span></div>
+                    <p class="price">Rs. 1,800 <span class="old-price">Rs. 2,500</span></p>
+                    <button onclick="addToCart('Gaming Mouse', 1800, 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                </div>
+            </div>
 
-        <!-- Product 4 -->
-        <div class="card" data-name="Running Shoes">
-            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="Running Shoes">
-            <h2>Running Shoes</h2>
-            <h3>Sports Comfort</h3>
-            <p>Rs. 5,500</p>
-            <button onclick="addToCart('Running Shoes', 5500, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')">Add to Cart</button>
+            <!-- Product 4 -->
+            <div class="card" data-name="Running Shoes">
+                <span class="badge best-seller">Best Seller</span>
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="Running Shoes">
+                <div class="card-details">
+                    <h3>Running Shoes</h3>
+                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span>(4.6)</span></div>
+                    <p class="price">Rs. 5,500 <span class="old-price">Rs. 7,000</span></p>
+                    <button onclick="addToCart('Running Shoes', 5500, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                </div>
+            </div>
         </div>
-
     </section>
+
+    <!-- Sliding Sidebar Cart -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-sidebar-header">
+            <h3><i class="fas fa-shopping-bag"></i> Your Cart</h3>
+            <i class="fas fa-times close-btn" onclick="toggleCart()"></i>
+        </div>
+        <div class="cart-items-container" id="cart-items">
+            <!-- Items will be injected by JavaScript -->
+            <p class="empty-msg">Your cart is empty.</p>
+        </div>
+        <div class="cart-sidebar-footer">
+            <div class="total-row">
+                <span>Total Amount:</span>
+                <span id="cart-total">Rs. 0</span>
+            </div>
+            
+            <!-- WhatsApp Checkout Form Inside Cart -->
+            <div class="checkout-form">
+                <h4><i class="fab fa-whatsapp"></i> Quick WhatsApp Order</h4>
+                <input type="text" id="user-name" placeholder="Your Full Name" required>
+                <input type="text" id="user-address" placeholder="Delivery Address" required>
+                <button class="whatsapp-btn" onclick="sendOrderViaWhatsApp()"><i class="fab fa-whatsapp"></i> Send Order via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Popup -->
+    <div class="toast" id="toast-notification">Product added successfully! 🎉</div>
 
     <!-- Footer Section -->
     <footer>
         <p>Copyright © 2026 <strong>Warnoze-Shop</strong>. All Rights Reserved.</p>
-        <p>WhatsApp: 03366290599 | JazzCash: 03002869538</p>
+        <div class="payment-methods">
+            <span><i class="fas fa-phone-alt"></i> WhatsApp: 03366290599</span> | 
+            <span><i class="fas fa-wallet"></i> JazzCash: 03002869538</span>
+        </div>
     </footer>
 
-    <!-- Script.js Linking -->
     <script src="script.js"></script>
-    
-    <!-- Simple Search Functionality Script -->
-    <script>
-        function searchProducts() {
-            let input = document.getElementById('search-bar').value.toLowerCase();
-            let cards = document.getElementsByClassName('card');
-            
-            for (let i = 0; i < cards.length; i++) {
-                let title = cards[i].getAttribute('data-name').toLowerCase();
-                if (title.includes(input)) {
-                    cards[i].style.display = "";
-                } else {
-                    cards[i].style.display = "none";
-                }
-            }
-        }
-    </script>
 </body>
 </html>
