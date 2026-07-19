@@ -12,7 +12,7 @@
         .admin-btn-nav { background: #ff4757 !important; color: white !important; border-radius: 5px; padding: 5px 10px; }
         .admin-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: white; box-shadow: 0 5px 30px rgba(0,0,0,0.3); padding: 20px; z-index: 2000; border-radius: 10px; max-height: 85vh; overflow-y: auto; }
         .admin-modal.open { display: block; }
-        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index: 1999; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
         .modal-overlay.open { display: block; }
         .admin-modal h3 { margin-bottom: 15px; color: #333; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px; }
         .admin-form input, .admin-form select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
@@ -36,7 +36,6 @@
             <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
             <a href="#products-section"><i class="fas fa-box"></i> Products</a>
             <a href="#" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
-            <!-- Admin Panel Button -->
             <a href="#" onclick="openAdminPanel()" class="admin-btn-nav"><i class="fas fa-user-shield"></i> Admin</a>
         </nav>
     </header>
@@ -76,20 +75,17 @@
             <i class="fas fa-times" style="cursor:pointer;" onclick="closeAdminPanel()"></i>
         </div>
         
-        <!-- Product Add Form -->
         <div class="admin-form">
-            <input type="text" id="new-prod-name" placeholder="Product Name (e.g., Casual Shoes)">
+            <input type="text" id="new-prod-name" placeholder="Product Name (e.g., M10 Earbuds)">
             <input type="number" id="new-prod-price" placeholder="Selling Price (Rs.)">
             <input type="number" id="new-prod-oldprice" placeholder="Old Price / Cut Price (Rs.)">
-            <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., Sale, Hot)">
-            <input type="text" id="new-prod-img" placeholder="Image Link URL (Unsplash or any link)">
+            <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., 50% OFF, Daraz Choice)">
+            <input type="text" id="new-prod-img" placeholder="Image Link URL">
             <button onclick="addNewProductFromAdmin()"><i class="fas fa-plus-circle"></i> Add Product to Shop</button>
         </div>
 
         <h4>Manage Existing Products</h4>
-        <div class="admin-prod-list" id="admin-manage-list">
-            <!-- JavaScript will load items here to delete -->
-        </div>
+        <div class="admin-prod-list" id="admin-manage-list"></div>
     </div>
 
     <!-- Sliding Sidebar Cart -->
@@ -107,7 +103,6 @@
                 <span id="cart-total">Rs. 0</span>
             </div>
             
-            <!-- WhatsApp Checkout Form Inside Cart -->
             <div class="checkout-form">
                 <h4><i class="fab fa-whatsapp"></i> Quick WhatsApp Order</h4>
                 <input type="text" id="user-name" placeholder="Your Full Name" required>
@@ -117,10 +112,8 @@
         </div>
     </div>
 
-    <!-- Notification Toast Popup -->
     <div class="toast" id="toast-notification">Product added successfully! 🎉</div>
 
-    <!-- Footer Section -->
     <footer>
         <p>Copyright © 2026 <strong>Warnoze-Shop</strong>. All Rights Reserved.</p>
         <div class="payment-methods">
@@ -131,41 +124,43 @@
 
     <!-- Instant Execution Script -->
     <script>
-        // Default 6 items if admin hasn't added anything yet
+        // Best Selling Daraz Products added at real Pakistani local market rates!
         const defaultProducts = [
-            { name: "Casual White Sneakers for Men", price: 1850, oldPrice: 2999, badge: "Best Seller", rating: "4.8", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
-            { name: "Premium Leather Wallet (Black)", price: 950, oldPrice: 1500, badge: "Pure Leather", rating: "4.7", img: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500" },
-            { name: "Smart Watch Series 9 (Copy)", price: 2499, oldPrice: 4500, badge: "Hot Item", rating: "4.5", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
-            { name: "Wireless Bluetooth Earbuds Pro", price: 1250, oldPrice: 2500, badge: "Premium Sound", rating: "4.6", img: "https://images.unsplash.com/photo-1588449668365-d15e397f6787?w=500" },
-            { name: "Oversized Summer Cotton T-Shirt", price: 799, oldPrice: 1200, badge: "100% Cotton", rating: "4.9", img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" },
-            { name: "Stylish Sunglasses for Men & Women", price: 499, oldPrice: 999, badge: "UV Protection", rating: "4.4", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500" }
+            { name: "M10 TWS Wireless Earbuds Bluetooth 5.1", price: 699, oldPrice: 1500, badge: "Daraz Choice", rating: "4.7", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
+            { name: "T500 Smart Watch Full Touch Screen", price: 1199, oldPrice: 2500, badge: "Top Seller", rating: "4.5", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500" },
+            { name: "10 Inch LED Ring Light with Tripod Stand", price: 980, oldPrice: 1999, badge: "Vlogger Pack", rating: "4.6", img: "https://images.unsplash.com/photo-1626266150247-f26cb3b9cf78?w=500" },
+            { name: "Vintage T9 Hair Trimmer & Clipper for Men", price: 850, oldPrice: 1800, badge: "Hot Item", rating: "4.8", img: "https://images.unsplash.com/photo-1621607512214-68297480165e?w=500" },
+            { name: "Fleeces Zipper Hoodie for Winter Wear", price: 1250, oldPrice: 2200, badge: "50% OFF", rating: "4.4", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500" },
+            { name: "Anti-Theft Laptop Backpack with USB Port", price: 1499, oldPrice: 3000, badge: "Free Shipping", rating: "4.6", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" }
         ];
 
-        // Load custom products from localStorage OR use defaults
         let baseProducts = JSON.parse(localStorage.getItem("custom_products")) || defaultProducts;
-
         let productsData = [];
-        const variations = ["Standard", "Premium Quality", "Exclusive Pack", "Combo Deal", "Special Edition", "Limited Stock"];
+        
+        const colors = ["Premium Black", "Classic White", "Navy Blue", "Space Gray", "Rose Gold", "Charcoal"];
+        const sizes = ["Standard Edition", "Pro Quality", "Combo Deal", "Special Offer", "Limited Stock"];
 
         function generateCatalog() {
             productsData = [];
-            // Auto generates ~1000+ items based on the current baseProducts list
             let loops = Math.max(1, Math.ceil(1020 / baseProducts.length)); 
             
             for (let i = 1; i <= loops; i++) {
                 baseProducts.forEach((prod, index) => {
-                    let variantIndex = (i + index) % variations.length;
                     let serialNumber = (i - 1) * baseProducts.length + (index + 1);
+                    let selectedColor = colors[(i + index) % colors.length];
+                    let selectedSize = sizes[(i + index) % sizes.length];
                     
-                    let dynamicPrice = prod.price + (i * 5) - (index * 10);
+                    let dynamicPrice = prod.price + (i * 10) - (index * 5);
                     if (dynamicPrice < 100) dynamicPrice = prod.price;
-                    let dynamicOldPrice = dynamicPrice + 700;
+                    let dynamicOldPrice = dynamicPrice + 600;
+
+                    let uniqueName = `${prod.name} - ${selectedColor} (${selectedSize}) #${serialNumber}`;
 
                     productsData.push({
-                        name: prod.name + " (" + variations[variantIndex] + " #" + serialNumber + ")",
+                        name: uniqueName,
                         price: dynamicPrice,
                         oldPrice: dynamicOldPrice,
-                        badge: prod.badge || "New",
+                        badge: prod.badge || "Daraz Item",
                         rating: (4.2 + (serialNumber % 9) / 10).toFixed(1),
                         img: prod.img || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"
                     });
@@ -196,8 +191,8 @@
             });
         }
 
-        // --- ADMIN PANEL FUNCTIONS ---
-        const ADMIN_PASSWORD = "admin786"; // <--- AAPKA PASSWORD YEH HAI! Change it if you want.
+        // --- ADMIN PANEL ---
+        const ADMIN_PASSWORD = "admin786";
 
         function openAdminPanel() {
             let pass = prompt("Enter Admin Secure Password:");
@@ -206,11 +201,12 @@
                 document.getElementById("admin-overlay").classList.add("open");
                 renderAdminProductsList();
             } else {
-                alert("Incorrect Password! Access Denied.");
+                alert("Incorrect Password!");
             }
         }
 
         function closeAdminPanel() {
+            document.getElementById("admin-modal").classList.remove("remove-item");
             document.getElementById("admin-modal").classList.remove("open");
             document.getElementById("admin-overlay").classList.remove("open");
         }
@@ -218,19 +214,18 @@
         function addNewProductFromAdmin() {
             const name = document.getElementById("new-prod-name").value.trim();
             const price = parseInt(document.getElementById("new-prod-price").value);
-            const oldPrice = parseInt(document.getElementById("new-prod-oldprice").value) || price + 500;
-            const badge = document.getElementById("new-prod-badge").value.trim() || "Sale";
+            const oldPrice = parseInt(document.getElementById("new-prod-oldprice").value) || price + 600;
+            const badge = document.getElementById("new-prod-badge").value.trim() || "Daraz Hot";
             const img = document.getElementById("new-prod-img").value.trim();
 
             if (!name || !price || !img) {
-                alert("Please fill Name, Price, and Image Link fields!");
+                alert("Name, Price, and Image Link are required!");
                 return;
             }
 
             baseProducts.unshift({ name, price, oldPrice, badge, img });
             localStorage.setItem("custom_products", JSON.stringify(baseProducts));
             
-            // Clear inputs
             document.getElementById("new-prod-name").value = "";
             document.getElementById("new-prod-price").value = "";
             document.getElementById("new-prod-oldprice").value = "";
@@ -243,7 +238,7 @@
         }
 
         function deleteProductFromAdmin(index) {
-            if(confirm("Are you sure you want to delete this base product?")) {
+            if(confirm("Delete this product?")) {
                 baseProducts.splice(index, 1);
                 localStorage.setItem("custom_products", JSON.stringify(baseProducts));
                 renderAdminProductsList();
@@ -268,7 +263,6 @@
             generateCatalog();
             displayProducts(productsData);
         }
-        // -----------------------------
 
         function addToCart(name, price, image) {
             let existingItem = cart.find(item => item.name === name);
@@ -369,7 +363,7 @@
             toggleCart();
         }
 
-        // Run instantly on load
+        // Run instantly
         setTimeout(() => {
             refreshShopUI();
             updateCartCount();
