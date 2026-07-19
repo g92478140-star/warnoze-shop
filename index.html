@@ -3,16 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warnoze-Shop | Multi-Feature Premium Store</title>
+    <title>Warnoze-Shop | Best Affordable Online Store</title>
     <link rel="stylesheet" href="style.css">
     <!-- FontAwesome Icons for modern UI -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Admin Login & Panel Styles */
+        .admin-btn-nav { background: #ff4757 !important; color: white !important; border-radius: 5px; padding: 5px 10px; }
+        .admin-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: white; box-shadow: 0 5px 30px rgba(0,0,0,0.3); padding: 20px; z-index: 2000; border-radius: 10px; max-height: 85vh; overflow-y: auto; }
+        .admin-modal.open { display: block; }
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index: 1999; }
+        .modal-overlay.open { display: block; }
+        .admin-modal h3 { margin-bottom: 15px; color: #333; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px; }
+        .admin-form input, .admin-form select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .admin-form button { width: 100%; padding: 12px; background: #2ed573; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+        .admin-prod-list { margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #eee; padding: 5px; }
+        .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .admin-item button { background: #ff4757; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; }
+    </style>
 </head>
 <body>
 
     <!-- Top Announcement Bar -->
     <div class="top-bar">
-        <p>⚡ Mega Sale Live! Get 10% Off on JazzCash Payments! ⚡</p>
+        <p>⚡ Mega Sale Live! Free Delivery Across Pakistan on Orders Above Rs. 3,000! ⚡</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -22,24 +36,26 @@
             <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
             <a href="#products-section"><i class="fas fa-box"></i> Products</a>
             <a href="#" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
+            <!-- Admin Panel Button -->
+            <a href="#" onclick="openAdminPanel()" class="admin-btn-nav"><i class="fas fa-user-shield"></i> Admin</a>
         </nav>
     </header>
 
     <!-- Hero Section with Search -->
     <section class="hero">
-        <h1>Discover Premium Products</h1>
-        <p>Your one-stop shop for everything you need.</p>
+        <h1>Apni Marzi Ke Affordable Products</h1>
+        <p>Best Quality Products at Cheapest Prices in Pakistan.</p>
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search-bar" placeholder="What are you looking for today?..." onkeyup="searchProducts()">
+            <input type="text" id="search-bar" placeholder="Search products here..." onkeyup="searchProducts()">
         </div>
     </section>
 
     <!-- Flash Sale Section -->
     <section class="flash-sale">
         <div class="sale-info">
-            <h2><i class="fas fa-bolt"></i> Flash Deal of the Day</h2>
-            <p>Hurry up! Offers expire soon.</p>
+            <h2><i class="fas fa-bolt"></i> Today's Special Discount</h2>
+            <p>Hurry up! Limited stock available at these rates.</p>
         </div>
         <div class="timer" id="countdown-timer">05h : 45m : 20s</div>
     </section>
@@ -47,9 +63,34 @@
     <!-- Products Grid Section -->
     <section class="products-container" id="products-section">
         <h2 class="section-title">Trending Collection</h2>
-        <!-- Is div ke andar JavaScript automatic 1,000+ items load karega -->
         <div class="products-grid" id="product-list"></div>
     </section>
+
+    <!-- Admin Panel Modal Overlay -->
+    <div class="modal-overlay" id="admin-overlay" onclick="closeAdminPanel()"></div>
+
+    <!-- Admin Panel Modal Box -->
+    <div class="admin-modal" id="admin-modal">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3><i class="fas fa-lock"></i> Store Admin Panel</h3>
+            <i class="fas fa-times" style="cursor:pointer;" onclick="closeAdminPanel()"></i>
+        </div>
+        
+        <!-- Product Add Form -->
+        <div class="admin-form">
+            <input type="text" id="new-prod-name" placeholder="Product Name (e.g., Casual Shoes)">
+            <input type="number" id="new-prod-price" placeholder="Selling Price (Rs.)">
+            <input type="number" id="new-prod-oldprice" placeholder="Old Price / Cut Price (Rs.)">
+            <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., Sale, Hot)">
+            <input type="text" id="new-prod-img" placeholder="Image Link URL (Unsplash or any link)">
+            <button onclick="addNewProductFromAdmin()"><i class="fas fa-plus-circle"></i> Add Product to Shop</button>
+        </div>
+
+        <h4>Manage Existing Products</h4>
+        <div class="admin-prod-list" id="admin-manage-list">
+            <!-- JavaScript will load items here to delete -->
+        </div>
+    </div>
 
     <!-- Sliding Sidebar Cart -->
     <div class="cart-sidebar" id="cart-sidebar">
@@ -88,41 +129,48 @@
         </div>
     </footer>
 
-    <!-- All 1,000+ Products Generator Script Inside HTML Directly -->
+    <!-- Instant Execution Script -->
     <script>
-        const baseProducts = [
-            { name: "Google Pixel 8 Pro", price: 275000, oldPrice: 299000, badge: "Google Official", rating: "4.9", img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500" },
-            { name: "Apple iPhone 15 Pro Max", price: 385000, oldPrice: 420000, badge: "Apple Premium", rating: "5.0", img: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500" },
-            { name: "Samsung Galaxy S24 Ultra", price: 399000, oldPrice: 435000, badge: "Samsung Hub", rating: "4.8", img: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500" },
-            { name: "Sony WH-1000XM5 ANC", price: 95000, oldPrice: 110000, badge: "Sony Audio", rating: "4.7", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
-            { name: "Nike Air Max Alpha Gaming", price: 32000, oldPrice: 45000, badge: "Nike Sports", rating: "4.6", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
-            { name: "Google Pixel Watch 2", price: 85000, oldPrice: 99000, badge: "Google Official", rating: "4.5", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
-            { name: "Dell XPS 13 Laptop", price: 450000, oldPrice: 490000, badge: "Dell Official", rating: "4.8", img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500" },
-            { name: "Logitech G Pro Wireless Mouse", price: 28000, oldPrice: 35000, badge: "Logitech G", rating: "4.9", img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500" },
-            { name: "Apple AirPods Pro 2", price: 65000, oldPrice: 75000, badge: "Apple Premium", rating: "4.7", img: "https://images.unsplash.com/photo-1588449668365-d15e397f6787?w=500" },
-            { name: "Sony PlayStation 5 Slim", price: 165000, oldPrice: 185000, badge: "Sony Interactive", rating: "5.0", img: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500" }
+        // Default 6 items if admin hasn't added anything yet
+        const defaultProducts = [
+            { name: "Casual White Sneakers for Men", price: 1850, oldPrice: 2999, badge: "Best Seller", rating: "4.8", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
+            { name: "Premium Leather Wallet (Black)", price: 950, oldPrice: 1500, badge: "Pure Leather", rating: "4.7", img: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500" },
+            { name: "Smart Watch Series 9 (Copy)", price: 2499, oldPrice: 4500, badge: "Hot Item", rating: "4.5", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+            { name: "Wireless Bluetooth Earbuds Pro", price: 1250, oldPrice: 2500, badge: "Premium Sound", rating: "4.6", img: "https://images.unsplash.com/photo-1588449668365-d15e397f6787?w=500" },
+            { name: "Oversized Summer Cotton T-Shirt", price: 799, oldPrice: 1200, badge: "100% Cotton", rating: "4.9", img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" },
+            { name: "Stylish Sunglasses for Men & Women", price: 499, oldPrice: 999, badge: "UV Protection", rating: "4.4", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500" }
         ];
 
-        const productsData = [];
-        const variations = ["Edition", "Pro Max", "Plus Ultra", "Elite Pack", "Special Bundle", "Global Version", "Carbon Edition", "Limited Stock", "Platinum Series", "Classic Gold"];
+        // Load custom products from localStorage OR use defaults
+        let baseProducts = JSON.parse(localStorage.getItem("custom_products")) || defaultProducts;
 
-        // Loop runs 105 times * 10 items = 1,050 Products!
-        for (let i = 1; i <= 105; i++) {
-            baseProducts.forEach((prod, index) => {
-                let variantIndex = (i + index) % variations.length;
-                let serialNumber = (i - 1) * baseProducts.length + (index + 1);
-                let dynamicPrice = prod.price + (i * 120) - (index * 180);
-                let dynamicOldPrice = dynamicPrice + 6000;
+        let productsData = [];
+        const variations = ["Standard", "Premium Quality", "Exclusive Pack", "Combo Deal", "Special Edition", "Limited Stock"];
 
-                productsData.push({
-                    name: `${prod.name} (${variations[variantIndex]} #${serialNumber})`,
-                    price: dynamicPrice,
-                    oldPrice: dynamicOldPrice,
-                    badge: prod.badge,
-                    rating: (4.0 + (serialNumber % 11) / 10).toFixed(1),
-                    img: prod.img
+        function generateCatalog() {
+            productsData = [];
+            // Auto generates ~1000+ items based on the current baseProducts list
+            let loops = Math.max(1, Math.ceil(1020 / baseProducts.length)); 
+            
+            for (let i = 1; i <= loops; i++) {
+                baseProducts.forEach((prod, index) => {
+                    let variantIndex = (i + index) % variations.length;
+                    let serialNumber = (i - 1) * baseProducts.length + (index + 1);
+                    
+                    let dynamicPrice = prod.price + (i * 5) - (index * 10);
+                    if (dynamicPrice < 100) dynamicPrice = prod.price;
+                    let dynamicOldPrice = dynamicPrice + 700;
+
+                    productsData.push({
+                        name: prod.name + " (" + variations[variantIndex] + " #" + serialNumber + ")",
+                        price: dynamicPrice,
+                        oldPrice: dynamicOldPrice,
+                        badge: prod.badge || "New",
+                        rating: (4.2 + (serialNumber % 9) / 10).toFixed(1),
+                        img: prod.img || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"
+                    });
                 });
-            });
+            }
         }
 
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -140,7 +188,7 @@
                         <div class="card-details">
                             <h3>${product.name}</h3>
                             <div class="rating"><i class="fas fa-star"></i> <span>(${product.rating})</span></div>
-                            <p class="price">Rs. ${product.price.toLocaleString()} <span class="old-price">Rs. ${product.oldPrice.toLocaleString()}</span></p>
+                            <p class="price">Rs. ${Math.round(product.price).toLocaleString()} <span class="old-price">Rs. ${Math.round(product.oldPrice).toLocaleString()}</span></p>
                             <button onclick="addToCart('${product.name}', ${product.price}, '${product.img}')"><i class="fas fa-cart-plus"></i> Add to Cart</button>
                         </div>
                     </div>
@@ -148,12 +196,86 @@
             });
         }
 
+        // --- ADMIN PANEL FUNCTIONS ---
+        const ADMIN_PASSWORD = "admin786"; // <--- AAPKA PASSWORD YEH HAI! Change it if you want.
+
+        function openAdminPanel() {
+            let pass = prompt("Enter Admin Secure Password:");
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById("admin-modal").classList.add("open");
+                document.getElementById("admin-overlay").classList.add("open");
+                renderAdminProductsList();
+            } else {
+                alert("Incorrect Password! Access Denied.");
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById("admin-modal").classList.remove("open");
+            document.getElementById("admin-overlay").classList.remove("open");
+        }
+
+        function addNewProductFromAdmin() {
+            const name = document.getElementById("new-prod-name").value.trim();
+            const price = parseInt(document.getElementById("new-prod-price").value);
+            const oldPrice = parseInt(document.getElementById("new-prod-oldprice").value) || price + 500;
+            const badge = document.getElementById("new-prod-badge").value.trim() || "Sale";
+            const img = document.getElementById("new-prod-img").value.trim();
+
+            if (!name || !price || !img) {
+                alert("Please fill Name, Price, and Image Link fields!");
+                return;
+            }
+
+            baseProducts.unshift({ name, price, oldPrice, badge, img });
+            localStorage.setItem("custom_products", JSON.stringify(baseProducts));
+            
+            // Clear inputs
+            document.getElementById("new-prod-name").value = "";
+            document.getElementById("new-prod-price").value = "";
+            document.getElementById("new-prod-oldprice").value = "";
+            document.getElementById("new-prod-badge").value = "";
+            document.getElementById("new-prod-img").value = "";
+
+            alert("Product Added Successfully!");
+            renderAdminProductsList();
+            refreshShopUI();
+        }
+
+        function deleteProductFromAdmin(index) {
+            if(confirm("Are you sure you want to delete this base product?")) {
+                baseProducts.splice(index, 1);
+                localStorage.setItem("custom_products", JSON.stringify(baseProducts));
+                renderAdminProductsList();
+                refreshShopUI();
+            }
+        }
+
+        function renderAdminProductsList() {
+            const container = document.getElementById("admin-manage-list");
+            container.innerHTML = "";
+            baseProducts.forEach((prod, idx) => {
+                container.innerHTML += `
+                    <div class="admin-item">
+                        <span>${prod.name.substring(0,30)}... (Rs. ${prod.price})</span>
+                        <button onclick="deleteProductFromAdmin(${idx})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function refreshShopUI() {
+            generateCatalog();
+            displayProducts(productsData);
+        }
+        // -----------------------------
+
         function addToCart(name, price, image) {
             let existingItem = cart.find(item => item.name === name);
             if (existingItem) {
                 existingItem.qty += 1;
             } else {
-                cart.push({ name, price, image, qty: 1 });
+                cart.push({ name: name, price: price, image: image, qty: 1 });
             }
             saveAndRefreshCart();
             showToast("Added to Cart! 🎉");
@@ -195,14 +317,14 @@
                         <img src="${item.image}" alt="${item.name}">
                         <div class="cart-item-info">
                             <h4>${item.name.substring(0, 22)}...</h4>
-                            <p>Rs. ${item.price.toLocaleString()} x ${item.qty}</p>
+                            <p>Rs. ${Math.round(item.price).toLocaleString()} x ${item.qty}</p>
                         </div>
                         <i class="fas fa-trash-alt remove-item" onclick="removeItem(${index})"></i>
                     </div>
                 `;
             });
             
-            totalSpan.innerText = "Rs. " + grandTotal.toLocaleString();
+            totalSpan.innerText = "Rs. " + Math.round(grandTotal).toLocaleString();
         }
 
         function removeItem(index) {
@@ -235,11 +357,11 @@
             
             let total = 0;
             cart.forEach(item => {
-                orderText += `- ${item.name} (Qty: ${item.qty}) - Rs. ${(item.price * item.qty).toLocaleString()}%0A`;
+                orderText += `- ${item.name} (Qty: ${item.qty}) - Rs. ${Math.round(item.price * item.qty).toLocaleString()}%0A`;
                 total += item.price * item.qty;
             });
             
-            orderText += `%0A💰 *Total Amount:* Rs. ${total.toLocaleString()}%0A💳 *Payment:* JazzCash/COD`;
+            orderText += `%0A💰 *Total Amount:* Rs. ${Math.round(total).toLocaleString()}%0A💳 *Payment:* JazzCash/COD`;
             window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${orderText}`, '_blank');
             
             cart = [];
@@ -247,20 +369,22 @@
             toggleCart();
         }
 
-        window.onload = function() {
-            displayProducts(productsData); 
+        // Run instantly on load
+        setTimeout(() => {
+            refreshShopUI();
             updateCartCount();
             renderCartItems();
-            
-            let time = 20720;
-            setInterval(() => {
-                time--;
-                let h = Math.floor(time / 3600);
-                let m = Math.floor((time % 3600) / 60);
-                let s = time % 60;
-                document.getElementById("countdown-timer").innerText = `${h<10?'0'+h:h}h : ${m<10?'0'+m:m}m : ${s<10?'0'+s:s}s`;
-            }, 1000);
-        };
+        }, 100);
+
+        let time = 20720;
+        setInterval(() => {
+            time--;
+            let h = Math.floor(time / 3600);
+            let m = Math.floor((time % 3600) / 60);
+            let s = time % 60;
+            const timerDiv = document.getElementById("countdown-timer");
+            if(timerDiv) timerDiv.innerText = `${h<10?'0'+h:h}h : ${m<10?'0'+m:m}m : ${s<10?'0'+s:s}s`;
+        }, 1000);
     </script>
 </body>
 </html>
