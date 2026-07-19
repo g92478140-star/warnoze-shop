@@ -14,18 +14,17 @@
         .admin-modal.open { display: block; }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
         .modal-overlay.open { display: block; }
-        .admin-modal h3 { margin-bottom: 15px; color: #333; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px; }
+        .admin-modal h3, .admin-modal h4 { margin-top: 15px; margin-bottom: 10px; color: #333; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px; }
         .admin-form input, .admin-form select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         
-        /* Dynamic Button Styles for Add/Update */
         .admin-form button { width: 100%; padding: 12px; background: #2ed573; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; transition: background 0.2s; }
         .admin-form button.update-mode { background: #ff9f43 !important; }
+        .btn-banner-save { background: #3742fa !important; margin-top: 5px; }
+        .btn-password-save { background: #ff4757 !important; margin-top: 5px; }
         
         .admin-prod-list { margin-top: 15px; max-height: 180px; overflow-y: auto; border: 1px solid #eee; padding: 5px; border-radius: 5px; }
         .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 5px; border-bottom: 1px solid #eee; font-size: 13px; }
         .admin-item-actions { display: flex; gap: 5px; }
-        .admin-item btn-del { background: #ff4757; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
-        .admin-item btn-edit { background: #ff9f43; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
         
         .upload-tip { font-size: 12px; color: #555; margin-bottom: 12px; background: #f9f9f9; padding: 8px; border-left: 3px solid #3742fa; border-radius: 3px; }
         .upload-tip a { color: #3742fa; font-weight: bold; text-decoration: none; }
@@ -35,9 +34,9 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background: #000000 !important; /* Pure Black Background */
-            color: #ffffff !important; /* Sharp White Text */
-            font-weight: 800 !important; /* Bold Font */
+            background: #000000 !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
             padding: 5px 12px;
             font-size: 11px;
             border-radius: 4px;
@@ -75,9 +74,9 @@
 </head>
 <body>
 
-    <!-- Top Announcement Bar -->
+    <!-- Top Announcement Bar (Dynamic Text) -->
     <div class="top-bar">
-        <p>⚡ Mega Sale Live! Free Delivery Across Pakistan on Orders Above Rs. 3,000! ⚡</p>
+        <p id="main-announcement-bar">⚡ Mega Sale Live! Free Delivery Across Pakistan on Orders Above Rs. 3,000! ⚡</p>
     </div>
 
     <!-- Header / Navbar -->
@@ -112,7 +111,8 @@
 
     <!-- Products Grid Section -->
     <section class="products-container" id="products-section">
-        <h2 class="section-title">Trending Collection</h2>
+        <!-- Dynamic Section Header Label -->
+        <h2 class="section-title" id="trending-section-title">Trending Collection</h2>
         <div class="products-grid" id="product-list"></div>
     </section>
 
@@ -136,6 +136,27 @@
             <i class="fas fa-times" style="cursor:pointer;" onclick="closeAllModals()"></i>
         </div>
         
+        <!-- NEW FEATURE: Change Admin Security Password -->
+        <h4><i class="fas fa-key"></i> Security Settings</h4>
+        <div class="admin-form" style="background: #fff5f5; padding: 10px; border: 1px dashed #ff4757; border-radius: 6px; margin-bottom: 15px;">
+            <label style="font-size:12px; font-weight:bold; color:#c0392b;">Change Admin Password:</label>
+            <input type="password" id="input-new-password" placeholder="Enter new secret password...">
+            <button class="btn-password-save" onclick="changeAdminPassword()"><i class="fas fa-lock"></i> Update Admin Password</button>
+        </div>
+        
+        <!-- Customize Website Banners Text -->
+        <h4><i class="fas fa-sliders-h"></i> Customize Banners & Headlines</h4>
+        <div class="admin-form" style="background: #fdfdfd; padding: 10px; border: 1px dashed #ccc; border-radius: 6px; margin-bottom: 15px;">
+            <label style="font-size:12px; font-weight:bold; color:#555;">Top Green Banner Text:</label>
+            <input type="text" id="input-top-banner" placeholder="Edit top green bar announcement text...">
+            
+            <label style="font-size:12px; font-weight:bold; color:#555;">Trending Section Title:</label>
+            <input type="text" id="input-trending-title" placeholder="Edit 'Trending Collection' headline text...">
+            
+            <button class="btn-banner-save" onclick="saveCustomBanners()"><i class="fas fa-save"></i> Save Banner Layouts</button>
+        </div>
+
+        <h4><i class="fas fa-box-open"></i> Manage Products Form</h4>
         <div class="admin-form">
             <!-- Hidden Input to track which product ID is being edited -->
             <input type="hidden" id="edit-prod-id" value="">
@@ -241,6 +262,56 @@
             });
         }
 
+        // --- CUSTOM BANNERS LOGIC ---
+        function loadCustomBanners() {
+            const savedTopBanner = localStorage.getItem("top_banner_text") || "⚡ Mega Sale Live! Free Delivery Across Pakistan on Orders Above Rs. 3,000! ⚡";
+            const savedTrendingTitle = localStorage.getItem("trending_title_text") || "Trending Collection";
+            
+            document.getElementById("main-announcement-bar").innerText = savedTopBanner;
+            document.getElementById("trending-section-title").innerText = savedTrendingTitle;
+            
+            document.getElementById("input-top-banner").value = savedTopBanner;
+            document.getElementById("input-trending-title").value = savedTrendingTitle;
+        }
+
+        function saveCustomBanners() {
+            const topText = document.getElementById("input-top-banner").value.trim();
+            const trendingText = document.getElementById("input-trending-title").value.trim();
+            
+            if(!topText || !trendingText) {
+                alert("Fields cannot be left completely empty!");
+                return;
+            }
+            
+            localStorage.setItem("top_banner_text", topText);
+            localStorage.setItem("trending_title_text", trendingText);
+            
+            document.getElementById("main-announcement-bar").innerText = topText;
+            document.getElementById("trending-section-title").innerText = trendingText;
+            
+            alert("Website Banners & Layout Headers Saved Successfully! 🚀");
+        }
+
+        // --- PASSWORD CHANGE LOGIC ---
+        function changeAdminPassword() {
+            const newPassword = document.getElementById("input-new-password").value.trim();
+            if(!newPassword) {
+                alert("Please enter a valid password!");
+                return;
+            }
+            if(newPassword.length < 4) {
+                alert("Password must be at least 4 characters long!");
+                return;
+            }
+            localStorage.setItem("admin_store_password", newPassword);
+            document.getElementById("input-new-password").value = "";
+            alert("Admin Password Updated Successfully! 🔒 New password is active now.");
+        }
+
+        function getAdminPassword() {
+            return localStorage.getItem("admin_store_password") || "admin786";
+        }
+
         // --- PRODUCT DETAIL PAGE LOGIC ---
         function openProductDetailPage(productId) {
             const product = productsData.find(p => p.id == productId);
@@ -319,20 +390,20 @@
         }
 
         // --- ADMIN PANEL CONTROL ---
-        const ADMIN_PASSWORD = "admin786";
-
         function openAdminPanel() {
             let pass = prompt("Enter Admin Secure Password:");
-            if (pass === ADMIN_PASSWORD) {
+            let correctPassword = getAdminPassword();
+            
+            if (pass === correctPassword) {
                 document.getElementById("admin-modal").classList.add("open");
                 document.getElementById("admin-overlay").classList.add("open");
                 renderAdminProductsList();
+                loadCustomBanners();
             } else {
                 alert("Incorrect Password!");
             }
         }
 
-        // Handles whether to Add or Update based on form state
         function handleAdminSubmit() {
             const editId = document.getElementById("edit-prod-id").value;
             if (editId) {
@@ -367,7 +438,6 @@
             refreshShopUI();
         }
 
-        // NEW: Populate form fields for Editing
         function editProductFromAdmin(id) {
             const product = baseProducts.find(p => p.id == id);
             if (!product) return;
@@ -380,16 +450,13 @@
             document.getElementById("new-prod-desc").value = product.desc || "";
             document.getElementById("new-prod-img").value = product.img;
 
-            // Change button text and color to update mode
             const submitBtn = document.getElementById("admin-submit-btn");
             submitBtn.innerHTML = `<i class="fas fa-edit"></i> Update Product Details`;
             submitBtn.classList.add("update-mode");
             
-            // Scroll to form top safely
-            document.getElementById("admin-modal").scrollTop = 0;
+            document.getElementById("admin-modal").scrollTop = document.getElementById("admin-modal").scrollHeight;
         }
 
-        // NEW: Save Updated Product Details
         function updateExistingProduct(id) {
             const name = document.getElementById("new-prod-name").value.trim();
             const price = parseInt(document.getElementById("new-prod-price").value);
@@ -444,7 +511,6 @@
             }
         }
 
-        // Updated to include Edit Button layout
         function renderAdminProductsList() {
             const container = document.getElementById("admin-manage-list");
             container.innerHTML = "";
@@ -453,8 +519,8 @@
                     <div class="admin-item">
                         <span>${prod.name.substring(0,25)}... (Rs. ${prod.price})</span>
                         <div class="admin-item-actions">
-                            <button class="btn-edit" onclick="editProductFromAdmin(${prod.id})" style="background:#ff9f43; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;" title="Edit Product"><i class="fas fa-edit"></i></button>
-                            <button class="btn-del" onclick="deleteProductFromAdmin(${idx})" style="background:#ff4757; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;" title="Delete Product"><i class="fas fa-trash"></i></button>
+                            <button onclick="editProductFromAdmin(${prod.id})" style="background:#ff9f43; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;" title="Edit Product"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteProductFromAdmin(${idx})" style="background:#ff4757; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;" title="Delete Product"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -566,14 +632,15 @@
             toggleCart();
         }
 
-        // Run instantly
+        // Run instantly on load
         setTimeout(() => {
             refreshShopUI();
             updateCartCount();
             renderCartItems();
+            loadCustomBanners();
         }, 100);
 
-        let time = 20674;
+        let time = 20614;
         setInterval(() => {
             time--;
             let h = Math.floor(time / 3600);
