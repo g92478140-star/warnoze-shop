@@ -20,6 +20,8 @@
         .admin-prod-list { margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #eee; padding: 5px; }
         .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #eee; font-size: 13px; }
         .admin-item button { background: #ff4757; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; }
+        .upload-tip { font-size: 12px; color: #555; margin-bottom: 12px; background: #f9f9f9; padding: 8px; border-left: 3px solid #3742fa; border-radius: 3px; }
+        .upload-tip a { color: #3742fa; font-weight: bold; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -80,7 +82,14 @@
             <input type="number" id="new-prod-price" placeholder="Selling Price (Rs.)">
             <input type="number" id="new-prod-oldprice" placeholder="Old Price / Cut Price (Rs.)">
             <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., 50% OFF, Daraz Choice)">
-            <input type="text" id="new-prod-img" placeholder="Image Link URL">
+            
+            <!-- Photo Upload Assistance Option -->
+            <div class="upload-tip">
+                <i class="fas fa-image"></i> <strong>Photo Upload Tool:</strong> Laptop ya Mobile se photo lagane ke liye 
+                <a href="https://imgbb.com" target="_blank">imgbb.com</a> par upload karein aur Direct Link yahan paste karein.
+            </div>
+            <input type="text" id="new-prod-img" placeholder="Paste Image Link URL Here">
+            
             <button onclick="addNewProductFromAdmin()"><i class="fas fa-plus-circle"></i> Add Product to Shop</button>
         </div>
 
@@ -103,10 +112,12 @@
                 <span id="cart-total">Rs. 0</span>
             </div>
             
+            <!-- Enhanced Checkout Form for Customers -->
             <div class="checkout-form">
                 <h4><i class="fab fa-whatsapp"></i> Quick WhatsApp Order</h4>
                 <input type="text" id="user-name" placeholder="Your Full Name" required>
-                <input type="text" id="user-address" placeholder="Delivery Address" required>
+                <input type="tel" id="user-phone" placeholder="WhatsApp / Phone Number (e.g., 03001234567)" required>
+                <input type="text" id="user-address" placeholder="Delivery Address (City Name & Area)" required>
                 <button class="whatsapp-btn" onclick="sendOrderViaWhatsApp()"><i class="fab fa-whatsapp"></i> Send Order via WhatsApp</button>
             </div>
         </div>
@@ -124,7 +135,7 @@
 
     <!-- Instant Execution Script -->
     <script>
-        // Best Selling Daraz Style Products
+        // Default Best Selling Daraz Style Products
         const defaultProducts = [
             { name: "M10 TWS Wireless Earbuds Bluetooth 5.1", price: 699, oldPrice: 1500, badge: "Daraz Choice", rating: "4.7", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
             { name: "T500 Smart Watch Full Touch Screen", price: 1199, oldPrice: 2500, badge: "Top Seller", rating: "4.5", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500" },
@@ -134,12 +145,10 @@
             { name: "Anti-Theft Laptop Backpack with USB Port", price: 1499, oldPrice: 3000, badge: "Free Shipping", rating: "4.6", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" }
         ];
 
-        // Load items from local storage or use defaults directly without repeating loops
         let baseProducts = JSON.parse(localStorage.getItem("custom_products")) || defaultProducts;
         let productsData = [];
 
         function generateCatalog() {
-            // No more dynamic replication loop - show only actual base/added products
             productsData = [...baseProducts];
         }
 
@@ -302,7 +311,6 @@
             saveAndRefreshCart();
         }
 
-        // Real-time local filtering for search bar
         function searchProducts() {
             let input = document.getElementById('search-bar').value.toLowerCase();
             let filtered = productsData.filter(p => p.name.toLowerCase().includes(input));
@@ -318,13 +326,14 @@
 
         function sendOrderViaWhatsApp() {
             const name = document.getElementById("user-name").value.trim();
+            const phone = document.getElementById("user-phone").value.trim();
             const address = document.getElementById("user-address").value.trim();
             
             if (cart.length === 0) { alert("Your cart is empty!"); return; }
-            if (!name || !address) { alert("Please enter name and address."); return; }
+            if (!name || !phone || !address) { alert("Please fill Name, Phone Number, and Address!"); return; }
             
             let whatsappNumber = "923366290599"; 
-            let orderText = `*New Order From Warnoze-Shop*%0A%0A👤 *Customer:* ${name}%0A📍 *Address:* ${address}%0A%0A📦 *Items Ordered:*%0A`;
+            let orderText = `*New Order From Warnoze-Shop*%0A%0A👤 *Customer:* ${name}%0A📞 *Phone/WhatsApp:* ${phone}%0A📍 *Address:* ${address}%0A%0A📦 *Items Ordered:*%0A`;
             
             let total = 0;
             cart.forEach(item => {
@@ -332,7 +341,7 @@
                 total += item.price * item.qty;
             });
             
-            orderText += `%0A💰 *Total Amount:* Rs. ${Math.round(total).toLocaleString()}%0A💳 *Payment:* JazzCash/COD`;
+            orderText += `%0A💰 *Total Amount:* Rs. ${Math.round(total).toLocaleString()}%0A💳 *Payment:* Cash on Delivery (COD) / JazzCash`;
             window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${orderText}`, '_blank');
             
             cart = [];
