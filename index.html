@@ -124,7 +124,7 @@
 
     <!-- Instant Execution Script -->
     <script>
-        // Best Selling Daraz Products added at real Pakistani local market rates!
+        // Best Selling Daraz Style Products
         const defaultProducts = [
             { name: "M10 TWS Wireless Earbuds Bluetooth 5.1", price: 699, oldPrice: 1500, badge: "Daraz Choice", rating: "4.7", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
             { name: "T500 Smart Watch Full Touch Screen", price: 1199, oldPrice: 2500, badge: "Top Seller", rating: "4.5", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500" },
@@ -134,38 +134,13 @@
             { name: "Anti-Theft Laptop Backpack with USB Port", price: 1499, oldPrice: 3000, badge: "Free Shipping", rating: "4.6", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" }
         ];
 
+        // Load items from local storage or use defaults directly without repeating loops
         let baseProducts = JSON.parse(localStorage.getItem("custom_products")) || defaultProducts;
         let productsData = [];
-        
-        const colors = ["Premium Black", "Classic White", "Navy Blue", "Space Gray", "Rose Gold", "Charcoal"];
-        const sizes = ["Standard Edition", "Pro Quality", "Combo Deal", "Special Offer", "Limited Stock"];
 
         function generateCatalog() {
-            productsData = [];
-            let loops = Math.max(1, Math.ceil(1020 / baseProducts.length)); 
-            
-            for (let i = 1; i <= loops; i++) {
-                baseProducts.forEach((prod, index) => {
-                    let serialNumber = (i - 1) * baseProducts.length + (index + 1);
-                    let selectedColor = colors[(i + index) % colors.length];
-                    let selectedSize = sizes[(i + index) % sizes.length];
-                    
-                    let dynamicPrice = prod.price + (i * 10) - (index * 5);
-                    if (dynamicPrice < 100) dynamicPrice = prod.price;
-                    let dynamicOldPrice = dynamicPrice + 600;
-
-                    let uniqueName = `${prod.name} - ${selectedColor} (${selectedSize}) #${serialNumber}`;
-
-                    productsData.push({
-                        name: uniqueName,
-                        price: dynamicPrice,
-                        oldPrice: dynamicOldPrice,
-                        badge: prod.badge || "Daraz Item",
-                        rating: (4.2 + (serialNumber % 9) / 10).toFixed(1),
-                        img: prod.img || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"
-                    });
-                });
-            }
+            // No more dynamic replication loop - show only actual base/added products
+            productsData = [...baseProducts];
         }
 
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -206,7 +181,6 @@
         }
 
         function closeAdminPanel() {
-            document.getElementById("admin-modal").classList.remove("remove-item");
             document.getElementById("admin-modal").classList.remove("open");
             document.getElementById("admin-overlay").classList.remove("open");
         }
@@ -223,7 +197,9 @@
                 return;
             }
 
-            baseProducts.unshift({ name, price, oldPrice, badge, img });
+            const randomRating = (4.3 + Math.random() * 0.6).toFixed(1);
+
+            baseProducts.unshift({ name, price, oldPrice, badge, rating: randomRating, img });
             localStorage.setItem("custom_products", JSON.stringify(baseProducts));
             
             document.getElementById("new-prod-name").value = "";
@@ -326,6 +302,7 @@
             saveAndRefreshCart();
         }
 
+        // Real-time local filtering for search bar
         function searchProducts() {
             let input = document.getElementById('search-bar').value.toLowerCase();
             let filtered = productsData.filter(p => p.name.toLowerCase().includes(input));
