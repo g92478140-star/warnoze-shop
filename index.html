@@ -23,21 +23,21 @@
         .upload-tip { font-size: 12px; color: #555; margin-bottom: 12px; background: #f9f9f9; padding: 8px; border-left: 3px solid #3742fa; border-radius: 3px; }
         .upload-tip a { color: #3742fa; font-weight: bold; text-decoration: none; }
 
-        /* FIX: Badge Styling for High Visibility */
+        /* FIX: Black Badges with White Text for High Visibility */
         .card .badge {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(255, 255, 255, 0.95);
-            color: #000000 !important; /* Pure Black Text */
-            font-weight: 800 !important; /* Bold font */
-            padding: 4px 10px;
+            background: #000000 !important; /* Pure Black Background */
+            color: #ffffff !important; /* Sharp White Text */
+            font-weight: 800 !important; /* Bold Font */
+            padding: 5px 12px;
             font-size: 11px;
             border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             text-transform: uppercase;
             z-index: 10;
-            border: 1px solid #000; /* Subtle border for extra pop */
+            display: inline-block !important; /* Visible properly */
         }
 
         /* Product Detail Page View (Modal) Styles */
@@ -133,7 +133,7 @@
             <input type="text" id="new-prod-name" placeholder="Product Name (e.g., M10 Earbuds)">
             <input type="number" id="new-prod-price" placeholder="Selling Price (Rs.)">
             <input type="number" id="new-prod-oldprice" placeholder="Old Price / Cut Price (Rs.)">
-            <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., 50% OFF, Daraz Choice)">
+            <input type="text" id="new-prod-badge" placeholder="Badge Tag (e.g., TOP SELLER, 50% OFF, HOT ITEM)">
             <input type="text" id="new-prod-desc" placeholder="Product Description / Details">
             
             <div class="upload-tip">
@@ -213,9 +213,12 @@
             grid.innerHTML = "";
             
             productsToRender.forEach(product => {
+                // If badge is completely empty, don't show the black box layout
+                const badgeHtml = product.badge ? `<span class="badge">${product.badge}</span>` : '';
+                
                 grid.innerHTML += `
                     <div class="card" data-name="${product.name}">
-                        <span class="badge">${product.badge}</span>
+                        ${badgeHtml}
                         <img src="${product.img}" alt="${product.name}" onclick="openProductDetailPage(${product.id})">
                         <div class="card-details">
                             <h3 onclick="openProductDetailPage(${product.id})">${product.name}</h3>
@@ -322,7 +325,7 @@
             const name = document.getElementById("new-prod-name").value.trim();
             const price = parseInt(document.getElementById("new-prod-price").value);
             const oldPrice = parseInt(document.getElementById("new-prod-oldprice").value) || price + 600;
-            const badge = document.getElementById("new-prod-badge").value.trim() || "Daraz Hot";
+            const badge = document.getElementById("new-prod-badge").value.trim(); // Dynamic Custom Input Save
             const desc = document.getElementById("new-prod-desc").value.trim() || "High quality trending online store product.";
             const img = document.getElementById("new-prod-img").value.trim();
 
