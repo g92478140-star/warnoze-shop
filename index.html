@@ -3,140 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Warnoze Shop</title>
 
 <link rel="stylesheet" href="style.css">
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:#f5f5f5;
-}
-
-header{
-background:#111;
-color:white;
-padding:20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.logo{
-font-size:30px;
-font-weight:bold;
-color:#ff3b3b;
-}
-
-nav a{
-color:white;
-text-decoration:none;
-margin-left:20px;
-font-size:18px;
-}
-
-.hero{
-height:500px;
-background:linear-gradient(to right,#ff3b3b,#ff7b00);
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-color:white;
-text-align:center;
-}
-
-.hero h1{
-font-size:55px;
-margin-bottom:20px;
-}
-
-.hero p{
-font-size:22px;
-margin-bottom:25px;
-}
-
-.hero button{
-padding:15px 35px;
-font-size:20px;
-border:none;
-background:white;
-color:red;
-border-radius:10px;
-cursor:pointer;
-}
-
-.search{
-width:80%;
-margin:40px auto;
-}
-
-.search input{
-width:100%;
-padding:15px;
-font-size:18px;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:25px;
-padding:40px;
-}
-
-.card{
-background:white;
-border-radius:10px;
-overflow:hidden;
-box-shadow:0 0 10px rgba(0,0,0,.2);
-}
-
-.card img{
-width:100%;
-height:250px;
-object-fit:cover;
-}
-
-.card h3{
-padding:10px;
-}
-
-.card p{
-padding:0 10px 10px;
-color:red;
-font-size:22px;
-}
-
-.card button{
-width:100%;
-padding:15px;
-border:none;
-background:red;
-color:white;
-font-size:18px;
-cursor:pointer;
-}
-
-footer{
-background:#111;
-color:white;
-text-align:center;
-padding:30px;
-margin-top:50px;
-}
-</style>
-
 </head>
 
 <body>
+
+<!-- ================= HEADER ================= -->
 
 <header>
 
@@ -145,77 +21,155 @@ margin-top:50px;
 </div>
 
 <nav>
+
 <a href="#">Home</a>
-<a href="#">Products</a>
-<a href="#">Cart 🛒</a>
-<a href="#">Contact</a>
+
+<a href="#products">Products</a>
+
+<a href="cart.html">
+🛒 Cart
+<span id="cart-count">0</span>
+</a>
+
 </nav>
 
 </header>
+
+<!-- ================= HERO ================= -->
 
 <section class="hero">
 
 <h1>Welcome To Warnoze Shop</h1>
 
-<p>Buy Everything At Cheap Prices</p>
+<p>
+Gaming Accessories | Electronics | Fashion | Mobile
+</p>
 
-<button>Shop Now</button>
+<input
+type="text"
+id="search"
+placeholder="Search Products..."
+onkeyup="searchProducts()">
 
 </section>
 
-<div class="search">
+<!-- ================= PRODUCTS ================= -->
 
-<input type="text" placeholder="Search Product...">
-
-</div>
-
-<section class="products">
+<section
+class="products"
+id="products">
 
 <div class="card">
 
-<img src="https://picsum.photos/300/250?1">
+<img src="https://picsum.photos/300/300?1">
 
-<h3>Gaming Mouse</h3>
+<h2>Gaming Mouse</h2>
 
 <p>Rs.2500</p>
 
-<button>Add To Cart</button>
+<button
+onclick="addToCart(
+'Gaming Mouse',
+2500,
+'https://picsum.photos/300/300?1'
+)">
+Add To Cart
+</button>
 
 </div>
 
 <div class="card">
 
-<img src="https://picsum.photos/300/250?2">
+<img src="https://picsum.photos/300/300?2">
 
-<h3>Gaming Keyboard</h3>
+<h2>Gaming Keyboard</h2>
 
 <p>Rs.4500</p>
 
-<button>Add To Cart</button>
+<button
+onclick="addToCart(
+'Gaming Keyboard',
+4500,
+'https://picsum.photos/300/300?2'
+)">
+Add To Cart
+</button>
 
 </div>
 
 <div class="card">
 
-<img src="https://picsum.photos/300/250?3">
+<img src="https://picsum.photos/300/300?3">
 
-<h3>Headphones</h3>
+<h2>Gaming Headphones</h2>
 
-<p>Rs.3200</p>
+<p>Rs.3500</p>
 
-<button>Add To Cart</button>
+<button
+onclick="addToCart(
+'Gaming Headphones',
+3500,
+'https://picsum.photos/300/300?3'
+)">
+Add To Cart
+</button>
 
 </div>
 
 <div class="card">
 
-<img src="https://picsum.photos/300/250?4">
+<img src="https://picsum.photos/300/300?4">
 
-<h3>Smart Watch</h3>
+<h2>Gaming Chair</h2>
 
-<p>Rs.6500</p>
+<p>Rs.25000</p>
 
-<button>Add To Cart</button>
+<button
+onclick="addToCart(
+'Gaming Chair',
+25000,
+'https://picsum.photos/300/300?4'
+)">
+Add To Cart
+</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300/300?5">
+
+<h2>Monitor</h2>
+
+<p>Rs.38000</p>
+
+<button
+onclick="addToCart(
+'Monitor',
+38000,
+'https://picsum.photos/300/300?5'
+)">
+Add To Cart
+</button>
+
+</div>
+
+<div class="card">
+
+<img src="https://picsum.photos/300/300?6">
+
+<h2>Gaming Laptop</h2>
+
+<p>Rs.180000</p>
+
+<button
+onclick="addToCart(
+'Gaming Laptop',
+180000,
+'https://picsum.photos/300/300?6'
+)">
+Add To Cart
+</button>
 
 </div>
 
@@ -223,15 +177,147 @@ margin-top:50px;
 
 <footer>
 
-<h2>Warnoze Shop</h2>
+<h3>Warnoze Shop</h3>
 
-<p>WhatsApp: 03366290599</p>
-
-<p>JazzCash: 03002869538</p>
-
-<p>© 2026 Warnoze Shop</p>
+<p>
+Copyright © 2026
+</p>
 
 </footer>
+<!-- Featured Products -->
+
+<section class="products">
+
+<div class="card">
+<img src="https://picsum.photos/300/300?7">
+<h2>iPhone 16</h2>
+<p>Rs.350000</p>
+<button onclick="addToCart('iPhone 16',350000,'https://picsum.photos/300/300?7')">
+Add To Cart
+</button>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/300?8">
+<h2>Samsung TV</h2>
+<p>Rs.120000</p>
+<button onclick="addToCart('Samsung TV',120000,'https://picsum.photos/300/300?8')">
+Add To Cart
+</button>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/300?9">
+<h2>Nike Shoes</h2>
+<p>Rs.8500</p>
+<button onclick="addToCart('Nike Shoes',8500,'https://picsum.photos/300/300?9')">
+Add To Cart
+</button>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/300/300?10">
+<h2>Smart Phone</h2>
+<p>Rs.55000</p>
+<button onclick="addToCart('Smart Phone',55000,'https://picsum.photos/300/300?10')">
+Add To Cart
+</button>
+</div>
+<!-- More Products -->
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?11">
+    <h2>Laptop</h2>
+    <p>Rs.95000</p>
+    <button onclick="addToCart('Laptop',95000,'https://picsum.photos/300/300?11')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?12">
+    <h2>Gaming Chair</h2>
+    <p>Rs.28000</p>
+    <button onclick="addToCart('Gaming Chair',28000,'https://picsum.photos/300/300?12')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?13">
+    <h2>PlayStation 5</h2>
+    <p>Rs.180000</p>
+    <button onclick="addToCart('PlayStation 5',180000,'https://picsum.photos/300/300?13')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?14">
+    <h2>Xbox Series X</h2>
+    <p>Rs.170000</p>
+    <button onclick="addToCart('Xbox Series X',170000,'https://picsum.photos/300/300?14')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?15">
+    <h2>Gaming Monitor</h2>
+    <p>Rs.45000</p>
+    <button onclick="addToCart('Gaming Monitor',45000,'https://picsum.photos/300/300?15')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?16">
+    <h2>Gaming Desk</h2>
+    <p>Rs.22000</p>
+    <button onclick="addToCart('Gaming Desk',22000,'https://picsum.photos/300/300?16')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?17">
+    <h2>Webcam HD</h2>
+    <p>Rs.7000</p>
+    <button onclick="addToCart('Webcam HD',7000,'https://picsum.photos/300/300?17')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?18">
+    <h2>USB Microphone</h2>
+    <p>Rs.12000</p>
+    <button onclick="addToCart('USB Microphone',12000,'https://picsum.photos/300/300?18')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?19">
+    <h2>Smart Watch</h2>
+    <p>Rs.15000</p>
+    <button onclick="addToCart('Smart Watch',15000,'https://picsum.photos/300/300?19')">
+        Add To Cart
+    </button>
+</div>
+
+<div class="card">
+    <img src="https://picsum.photos/300/300?20">
+    <h2>Power Bank</h2>
+    <p>Rs.4500</p>
+    <button onclick="addToCart('Power Bank',4500,'https://picsum.photos/300/300?20')">
+        Add To Cart
+    </button>
+</div>
+
+</section>
+
+<script src="script.js"></script>
 
 </body>
 </html>
